@@ -2,8 +2,6 @@
 
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
-// use Backpack\CRUD\app\Http\Controllers\CrudController;
-// use App\Http\Controllers\Admin\BoulderingCrudController;
 
 /*
 |--------------------------------------------------------------------------
@@ -16,9 +14,6 @@ use Inertia\Inertia;
 |
 */
 
-// Route::group(['prefix' => 'admin', 'middleware' => ['web']], function () {
-//     Route::crud('bouldering', BoulderingCrudController::class);
-// });
 Route::get('/', function () {
     return Inertia::render('Home');
 });
