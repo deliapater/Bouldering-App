@@ -25,7 +25,10 @@ class GearRequest extends FormRequest
     public function rules()
     {
         return [
-            // 'name' => 'required|min:5|max:255'
+            'name' => 'required|string|max:255',
+            'category' => 'nullable|string|max:255',
+            'description' => 'nullable|string|max:255',
+            'image' => 'nullable|image|max:2048',
         ];
     }
 
