@@ -3,6 +3,8 @@
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
+use App\Http\Controllers\TechniqueController;
+
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -17,3 +19,6 @@ use Inertia\Inertia;
 Route::get('/', function () {
     return Inertia::render('Home');
 });
+
+// Route::get('/techniques', [TechniqueController::class, 'index']);
+// Route::get('/techniques/{id}', [TechniqueController::class, 'show']);
