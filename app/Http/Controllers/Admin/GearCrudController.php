@@ -39,12 +39,9 @@ class GearCrudController extends CrudController
      */
     protected function setupListOperation()
     {
-        CRUD::setFromDb(); // set columns from db columns.
-
-        /**
-         * Columns can be defined using the fluent syntax:
-         * - CRUD::column('price')->type('number');
-         */
+        CRUD::column('name')->label('Gear Name')->type('text');
+        CRUD::column('description')->label('Description')->type('textarea');
+        CRUD::column('category')->label('category')->type('text');
     }
 
     /**
@@ -56,12 +53,10 @@ class GearCrudController extends CrudController
     protected function setupCreateOperation()
     {
         CRUD::setValidation(GearRequest::class);
-        CRUD::setFromDb(); // set fields from db columns.
 
-        /**
-         * Fields can be defined using the fluent syntax:
-         * - CRUD::field('price')->type('number');
-         */
+        CRUD::field('name')->label('Technique Name')->type('text');
+        CRUD::field('description')->label('Description')->type('textarea');
+        CRUD::field('category')->label('Category')->type('text');
     }
 
     /**
