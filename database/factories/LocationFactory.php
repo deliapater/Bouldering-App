@@ -19,6 +19,8 @@ class LocationFactory extends Factory
             'description' => $this->faker->address,
             'latitude' => $this->faker->latitude,
             'longitude' => $this->faker->longitude,
+            'created_at' => now(),
+            'updated_at' => now(),
         ];
     }
 }
