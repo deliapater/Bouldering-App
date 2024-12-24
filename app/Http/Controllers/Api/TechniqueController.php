@@ -44,5 +44,6 @@ class TechniqueController extends Controller
     {
         $technique = Technique::findOrFail($id);
         $technique->delete();
+        return response()->noContent();
     }
 }
