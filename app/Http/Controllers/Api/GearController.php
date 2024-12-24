@@ -36,5 +36,6 @@ class GearController extends Controller
     {
         $gear = Gear::findOrFail($id);
         $gear->delete();
+        return response()->noContent();
     }
 }
