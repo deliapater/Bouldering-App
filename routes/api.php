@@ -21,6 +21,7 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
 
+
 Route::apiResource('techniques', TechniqueController::class);
 Route::apiResource('gears', GearController::class);
 Route::apiResource('locations', LocationController::class);

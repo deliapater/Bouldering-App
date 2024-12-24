@@ -39,5 +39,6 @@ class LocationController extends Controller
     {
         $location = Location::findOrFail($id);
         $location->delete();
+        return response()->noContent();
     }
 }
