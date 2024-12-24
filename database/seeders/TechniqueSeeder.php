@@ -9,9 +9,6 @@ use App\Models\Gear;
 
 class TechniqueSeeder extends Seeder
 {
-    /**
-     * Run the database seeds.
-     */
     public function run(): void
     {
         $this->call(GearSeeder::class);

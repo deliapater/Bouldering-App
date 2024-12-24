@@ -21,7 +21,8 @@ class DatabaseSeeder extends Seeder
 
         $this->call([
             GearSeeder::class,
-            TechniqueSeeder::class
+            TechniqueSeeder::class,
+            LocationSeeder::class
         ]);
     }
 }
