@@ -72,7 +72,6 @@ class GearApiTest extends TestCase
     {
         $this->actingAs($this->user);
         $gear = Gear::first();
-
         $updatedData = [
             'name' => 'Updated Gear',
             'description' => 'Gear description.',

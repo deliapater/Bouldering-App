@@ -15,6 +15,12 @@ class LocationApiTest extends TestCase
     protected function setUp(): void
     {
         parent::setUp();
+        $this->user = User::factory()->create([
+            'name' => 'Test User',
+            'email' => 'test@example.com',
+            'password' => '123',
+            'role' => 'admin',
+        ]);
         Location::factory()->count(3)->create();
     }
     /**
@@ -32,21 +38,22 @@ class LocationApiTest extends TestCase
      * Test creating a location.
      * @return void
      */
-    // public function test_create_location()
-    // {
-    //     $data = [
-    //         'name' => 'Test Location',
-    //         'latitude' => 12.345,
-    //         'longitude' => 67.890,
-    //         'description' => '123 Test St',
-    //     ];
+    public function test_create_location()
+    {
+        $this->actingAs($this->user);
+        $data = [
+            'name' => 'Test Location',
+            'latitude' => 12.345,
+            'longitude' => 67.890,
+            'description' => '123 Test St',
+        ];
     
-    //     $response = $this->postJson('/api/locations', $data);
-    //     $response->assertStatus(201)
-    //              ->assertJsonFragment(['name' => 'Test Location']);
+        $response = $this->postJson('/api/locations', $data);
+        $response->assertStatus(201)
+                 ->assertJsonFragment(['name' => 'Test Location']);
 
-    //     $this->assertDatabaseHas('locations', $data);
-    // }
+        $this->assertDatabaseHas('locations', $data);
+    }
 
     /**
      * Test fetching a single location.
@@ -60,29 +67,28 @@ class LocationApiTest extends TestCase
                  ->assertJsonFragment(['name' => $location->name]);
     }
 
-    // /**
-    //  * Test updating a location.
-    //  * @return void
-    //  */
-    // public function test_update_location()
-    // {
-    //     $location = Location::factory()->create();
+    /**
+     * Test updating a location.
+     * @return void
+     */
+    public function test_update_location()
+    {
+        $this->actingAs($this->user);
+        $location = Location::first();
+        $updatedData = [
+            'name' => 'Updated Location',
+            'description' => '456 Updated St',
+            'latitude' => 50.123456,
+            'longitude' => -90.123456,
+        ];
+        $response = $this->putJson("/api/locations/{$location->id}", $updatedData);
 
-    //     $updatedData = [
-    //         'name' => 'Updated Location',
-    //         'description' => '456 Updated St',
-    //         'latitude' => 50.123456,
-    //         'longitude' => -90.123456,
-    //     ];
+        $response->assertStatus(200)
+                ->assertJsonFragment(['name' => 'Updated Location']);
+        $this->assertDatabaseHas('locations', $updatedData);
+    }
 
-    //     $response = $this->putJson("/api/locations/{$location->id}", $updatedData);
-
-    //     $response->assertStatus(200)
-    //             ->assertJsonFragment(['name' => 'Updated Location']);
-    //     $this->assertDatabaseHas('locations', $updatedData);
-    // }
-
-        /**
+    /**
      * Test deleting a location.
      *
      * @return void

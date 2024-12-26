@@ -71,7 +71,7 @@ class TechniqueApiTest extends TestCase
      */
     public function test_update_technique()
     {
-        $technique = Technique::factory()->create();
+        $technique = Technique::first();
 
         $this->actingAs($this->user);
 

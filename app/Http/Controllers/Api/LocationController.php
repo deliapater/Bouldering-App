@@ -32,9 +32,6 @@ class LocationController extends Controller
         return new LocationResource($location);
     }
 
-    /**
-     * Remove the specified resource from storage.
-     */
     public function destroy(string $id)
     {
         $location = Location::findOrFail($id);
