@@ -21,10 +21,12 @@ class TechniqueController extends Controller
     }
 
  
-    public function store(Request $request)
+    public function store(TechniqueRequest $request)
     {
-       $technique = Technique::create($request->validated());
-       return new TechniqyeResource($technique);
+       $data = $request->validated();
+       $this->authorize('create', Technique::class);
+       $technique = Technique::create($data);
+       return new TechniqueResource($technique);
     }
 
 
@@ -35,6 +37,7 @@ class TechniqueController extends Controller
 
     public function update(TechniqueRequest $request, Technique $technique)
     {
+        $this->authorize('update', $technique);
         $technique->update($request->validated());
 
         return new TechniqueResource($technique);

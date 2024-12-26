@@ -28,6 +28,27 @@ class TechniqueApiTest extends TestCase
                 ->assertJsonCount(3, 'data');
     }
 
+    public function test_create_technique_policy()
+    {
+       $user = User::factory()->create([
+            'name' => 'Test User',
+            'email' => 'test@example.com',
+            'password' => '123',
+            'role' => 'admin',
+        ]);
+
+        $this->actingAs($user);
+
+        $response = $this->postJson(route('techniques.store'), [
+            'name' => 'Flagging',
+            'description' => 'flagging description',
+            'steps_to_practice' => '1.2.3.4...',
+            'difficulty_level' => 'intermediate'
+        ]);
+
+        $response->assertStatus(201);
+    }
+
     //  /**
     //  * Test fetching a single technique.
     //  * @return void

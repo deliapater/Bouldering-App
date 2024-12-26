@@ -13,8 +13,12 @@ class TechniqueRequest extends FormRequest
      */
     public function authorize()
     {
-        // only allow updates if the user is logged in
-        return backpack_auth()->check();
+        // For Backpack admin routes
+        if (request()->is('admin/*')) {
+            return backpack_auth()->check();
+        }
+        // For other API routes
+        return auth()->check();
     }
 
     /**
@@ -26,7 +30,7 @@ class TechniqueRequest extends FormRequest
     {
         return [
             'name' => 'required|string|max:255',
-            'difficulty_level' => 'required|string|in:Beginner,Intermediate,Advanced',
+            'difficulty_level' => 'required|string|in:beginner,intermediate,advanced',
             'description' => 'nullable|string',
             'steps_to_practice' => 'nullable|string',
             'image' => 'nullable|image|max:2048',
