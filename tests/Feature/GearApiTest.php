@@ -3,7 +3,6 @@
 namespace Tests\Feature;
 
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Foundation\Testing\WithFaker;
 use Tests\TestCase;
 use App\Models\Gear;
 use App\Models\User;
@@ -15,6 +14,12 @@ class GearApiTest extends TestCase
     protected function setUp() : void 
     {
         parent::setUp();
+        $this->user = User::factory()->create([
+            'name' => 'Test User',
+            'email' => 'test@example.com',
+            'password' => '123',
+            'role' => 'admin',
+        ]);
         Gear::factory()->count(3)->create();
     }
 
@@ -31,7 +36,7 @@ class GearApiTest extends TestCase
 
      /**
      * Test fetching a single gear.
-     * @retuen void
+     * @return void
      */
     public function test_fetch_single_gear()
     {
@@ -41,28 +46,48 @@ class GearApiTest extends TestCase
                  ->assertJsonFragment(['name' => $gear->name]);
     }
 
-    //  /**
-    //  * Test creating a new gear.
-    //  * @retuen void
-    //  */
-    // public function test_create_gear()
-    // {
-    //     $data = [
-    //         'name' => 'New Gear',
-    //         'description' => 'A new gear description.',
-    //         'category' => 'shoes'
-    //     ];
-    //     $response = $this->postJson('/api/gears', $data);
-    //     $response->assertStatus(201)
-    //              ->assertJsonFragment(['name' => 'New Gear']);
-    //     $this->assertDatabaseHas('gears', $data);
-    // }
+    /**
+     * Test creating a new gear.
+     * @return void
+     */
+    public function test_create_gear()
+    {
+        $this->actingAs($this->user);
+        $data = [
+            'name' => 'New Gear',
+            'description' => 'A new gear description.',
+            'category' => 'shoes'
+        ];
+        $response = $this->postJson('/api/gears', $data);
+        $response->assertStatus(201)
+                 ->assertJsonFragment(['name' => 'New Gear']);
+        $this->assertDatabaseHas('gears', $data);
+    }
 
-    //TODO: test_update_gear()
+    /**
+     * Test updating a gear.
+     * @return void
+     */
+    public function test_update_gear()
+    {
+        $this->actingAs($this->user);
+        $gear = Gear::first();
+
+        $updatedData = [
+            'name' => 'Updated Gear',
+            'description' => 'Gear description.',
+            'category' => 'shoes'
+        ];
+        $response = $this->putJson("/api/gears/{$gear->id}", $updatedData);
+
+        $response->assertStatus(200)
+                ->assertJsonFragment(['name' => 'Updated Gear']);
+        $this->assertDatabaseHas('gears', $updatedData);
+    }
 
     /**
      * Test deleting a gear.
-     * @retuen void
+     * @return void
      */
     public function test_delete_gear()
     {

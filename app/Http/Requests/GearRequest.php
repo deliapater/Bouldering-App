@@ -13,8 +13,12 @@ class GearRequest extends FormRequest
      */
     public function authorize()
     {
-        // only allow updates if the user is logged in
-        return backpack_auth()->check();
+        // For Backpack admin routes
+          if (request()->is('admin/*')) {
+            return backpack_auth()->check();
+        }
+        // For other API routes
+        return auth()->check();
     }
 
     /**

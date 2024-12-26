@@ -6,10 +6,12 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\GearRequest;
 use App\Http\Resources\GearResource;
 use App\Models\Gear;
-use Illuminate\Http\Request;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class GearController extends Controller
 {
+    use SoftDeletes;
+
     public function index()
     {
         $gears = Gear::all();
@@ -17,7 +19,9 @@ class GearController extends Controller
     }
     public function store(GearRequest $request)
     {
-        $gear = Gear::create($rquest->validate());
+        $data = $request->validated();
+        $this->authorize('create', Gear::class);
+        $gear = Gear::create($data);
         return new GearResource($gear);
     }
 
@@ -28,6 +32,7 @@ class GearController extends Controller
 
     public function update(GearRequest $request, Gear $gear)
     {
+        $this->authorize('create', Gear::class);
         $gear->update($request->validated());
         return new GearResource($gear);
     }
