@@ -6,12 +6,9 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\GearRequest;
 use App\Http\Resources\GearResource;
 use App\Models\Gear;
-use Illuminate\Database\Eloquent\SoftDeletes;
 
 class GearController extends Controller
 {
-    use SoftDeletes;
-
     public function index()
     {
         $gears = Gear::all();

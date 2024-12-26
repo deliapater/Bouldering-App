@@ -6,13 +6,9 @@ use App\Models\Technique;
 use App\Http\Requests\TechniqueRequest;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\TechniqueResource;
-use Illuminate\Database\Eloquent\SoftDeletes;
-
 
 class TechniqueController extends Controller
 {
-    use SoftDeletes;
-
     public function index()
     {
         $techniques = Technique::paginate(20);
