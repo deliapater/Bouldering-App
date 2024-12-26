@@ -3,7 +3,6 @@
 namespace Tests\Feature;
 
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Foundation\Testing\WithFaker;
 use Tests\TestCase;
 use App\Models\Technique;
 use App\Models\User;
@@ -16,6 +15,13 @@ class TechniqueApiTest extends TestCase
     {
         parent::setUp();
         Technique::factory()->count(3)->create();
+
+        $this->user = User::factory()->create([
+            'name' => 'Test User',
+            'email' => 'test@example.com',
+            'password' => '123',
+            'role' => 'admin',
+        ]);
     }
      /**
      * Test fetching all techniques.
@@ -28,16 +34,13 @@ class TechniqueApiTest extends TestCase
                 ->assertJsonCount(3, 'data');
     }
 
-    public function test_create_technique_policy()
+    /**
+     * Test create a technique.
+     * @return void
+     */
+    public function test_create_technique()
     {
-       $user = User::factory()->create([
-            'name' => 'Test User',
-            'email' => 'test@example.com',
-            'password' => '123',
-            'role' => 'admin',
-        ]);
-
-        $this->actingAs($user);
+        $this->actingAs($this->user);
 
         $response = $this->postJson(route('techniques.store'), [
             'name' => 'Flagging',
@@ -49,17 +52,42 @@ class TechniqueApiTest extends TestCase
         $response->assertStatus(201);
     }
 
-    //  /**
-    //  * Test fetching a single technique.
-    //  * @return void
-    //  */
-    // public function test_fetch_single_technique()
-    // {
-    //     $technique = Technique::first();
-    //     $response = $this->getJson("/api/techniques/{$technique->id}");
-    //     $response->assertStatus(200)
-    //             ->assertJsonFragment(['name' => $technique->name]);
-    // }
+     /**
+     * Test fetching a single technique.
+     * @return void
+     */
+    public function test_fetch_single_technique()
+    {
+
+        $technique = Technique::first();
+        $response = $this->getJson("/api/techniques/{$technique->id}");
+        $response->assertStatus(200)
+                ->assertJsonFragment(['name' => $technique->name]);
+    }
+
+    /**
+     * Test updating a technique.
+     * @return void
+     */
+    public function test_update_technique()
+    {
+        $technique = Technique::factory()->create();
+
+        $this->actingAs($this->user);
+
+        $updatedData = [
+            'name' => 'Updated Heel Hook',
+            'description' => 'Using your heel to hook onto a hold.',
+            'difficulty_level' => 'intermediate',
+            'steps_to_practice' => '1. Place your heel on the hold. 2. Push down to stabilize. 3. Engage your core for balance.',
+        ];
+
+        $response = $this->putJson("/api/techniques/{$technique->id}", $updatedData);
+
+        $response->assertStatus(200)
+                ->assertJsonFragment(['name' => 'Updated Heel Hook']);
+        $this->assertDatabaseHas('techniques', $updatedData);
+    }
 
     /**
      * Test deleting a technique.

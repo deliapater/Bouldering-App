@@ -30,7 +30,7 @@ class TechniqueController extends Controller
     }
 
 
-    public function show(TechniqueRequest $request)
+    public function show(Technique $technique)
     {
         return new TechniqueResource($technique);
     }
