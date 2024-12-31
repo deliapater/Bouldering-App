@@ -1,4 +1,4 @@
-<template>
+<!-- <template>
     <div>
       <h1>Techniques</h1>
       <ul>
@@ -18,4 +18,4 @@
     },
   }
   </script>
-  
+   -->
