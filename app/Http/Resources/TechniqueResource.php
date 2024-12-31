@@ -4,6 +4,7 @@ namespace App\Http\Resources;
 
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
+use App\Http\Resources\GearResource;
 
 class TechniqueResource extends JsonResource
 {
@@ -24,6 +25,7 @@ class TechniqueResource extends JsonResource
             'created_at' => $this->created_at->format('Y-m-d H:i:s'),
             'updated_at' => $this->updated_at->format('Y-m-d H:i:s'),
             'deleted_at' => $this->deleted_at, 
+            'gear' => GearResource::collection($this->whenLoaded('gear'))
         ];
     }
 }

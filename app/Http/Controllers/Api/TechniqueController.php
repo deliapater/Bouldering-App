@@ -11,7 +11,7 @@ class TechniqueController extends Controller
 {
     public function index()
     {
-        $techniques = Technique::paginate(20);
+        $techniques = Technique::with('gear')->paginate(20);
         return TechniqueResource::collection($techniques);
     }
 
@@ -27,7 +27,7 @@ class TechniqueController extends Controller
 
     public function show(Technique $technique)
     {
-        return new TechniqueResource($technique);
+        return new TechniqueResource($technique->load('gear'));
     }
 
     public function update(TechniqueRequest $request, Technique $technique)
