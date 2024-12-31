@@ -17,7 +17,7 @@ use App\Http\Controllers\TechniqueController;
 */
 
 Route::get('/', function () {
-    return Inertia::render('Home');
+    return Inertia::render('Dashboard');
 });
 
 // Route::get('/techniques', [TechniqueController::class, 'index']);
