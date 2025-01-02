@@ -33,7 +33,7 @@ class TechniqueRequest extends FormRequest
             'difficulty_level' => 'required|string|in:beginner,intermediate,advanced',
             'description' => 'nullable|string',
             'steps_to_practice' => 'nullable|string',
-            'image' => 'nullable|image|max:2048',
+            'image' => 'nullable|string|max:2048',
         ];
     }
 
@@ -59,7 +59,7 @@ class TechniqueRequest extends FormRequest
         return [
             'name.required' => 'The technique name is required.',
             'difficulty_level.required' => 'Please select a difficulty level.',
-            'image.image' => 'The uploaded file must be an image.',
+            'image.string' => 'The uploaded file must be an image.',
             'image.max' => 'The image size must not exceed 2MB.',
         ];
     }

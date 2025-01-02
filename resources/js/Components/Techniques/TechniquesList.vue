@@ -7,9 +7,9 @@
         <div v-else>
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                 <div v-for="technique in techniques" :key="technique.id" class="bg-white p-4 rounded-lg shadow-md">
-                    <img :src="technique.image" alt="" class="w-full h-48 object-cover rounded-md"/>
-                    <h3 class="text-xl font-semibold mt-2">{{ technique.name }}</h3>
-                    <p class="text-gray-600">{{ technique.difficulty_level }}</p>
+                    <img :src="getImageUrl(technique.image)" alt="" class="w-full h-48 object-cover rounded-md" >
+                    <h3 class="text-xl font-semibold mt-2">{{ technique.name }}</h3> 
+                    <p class="text-gray-600 capitalize">{{ technique.difficulty_level }}</p>
                     <p class="text-gray-500">{{ technique.description }}</p>
                     <div class="mt-4">
                         <inertia-link :href="`/techniques/${technique.id}`" class="text-blue-600 hover:text-blue-800">View Details</inertia-link>
@@ -39,33 +39,20 @@
 </template>
 
 <script>
-import { Inertia } from '@inertiajs/inertia';
+import { mapState, mapActions } from 'vuex';
 
 export default {
-    data() {
-        return {
-            techniques: [],
-            loading: true,
-            links: {}
-        };
-    },
-    mounted() {
-        this.fetchTechniques('/api/techniques');
+    computed: {
+        ...mapState('techniques', ['techniques', 'links', 'loading']),
     },
     methods: {
-        async fetchTechniques(url) {
-            this.loading = true;
-            try {
-                const response = await fetch(url);
-                const data = await response.json();
-                this.techniques = data.data;
-                this.pagination = data.meta.pagination;
-            } catch (error) {
-                console.error("Error fetching techniques:", error);
-            } finally {
-                this.loading = false;
-            }
+        ...mapActions('techniques', ['fetchTechniques']),
+        getImageUrl(image) {
+            return `/images/${image}`;
         }
+    },
+    mounted() {
+        this.fetchTechniques();
     }
-};
+}
 </script>
