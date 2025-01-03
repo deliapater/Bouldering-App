@@ -1,25 +1,33 @@
 <template>
-    <div>
+    <v-container fluid class="pa-6">
         <h1 class="text-2xl font-bold mb-4">Techniques</h1>
-        <div v-if="loading" class="text-center py-4">Loading...</div>
-        <TechniquesList :techniques="techniques"/>
-    </div>
+
+        <v-row v-if="loading" justify="center">
+            <v-progress-circular
+                indeterminate
+                color="primary"
+                size="ma-5"
+            ></v-progress-circular>
+        </v-row>
+
+        <TechniquesList :techniques="techniques" />
+    </v-container>
 </template>
 
 <script>
-import { mapGetters } from 'vuex/dist/vuex.cjs.js';
-import TechniquesList from '../../Components/Techniques/TechniquesList.vue';
+import { mapGetters } from "vuex/dist/vuex.cjs.js";
+import TechniquesList from "../../Components/Techniques/TechniquesList.vue";
 
 export default {
     components: {
         TechniquesList,
     },
     computed: {
-        ...mapGetters('techniques', ['techniques', 'loading']),
+        ...mapGetters("techniques", ["techniques", "loading"]),
     },
     mounted() {
         if (!this.techniques.length) {
-            this.$store.dispatch('techniques/fetchTechniques');
+            this.$store.dispatch("techniques/fetchTechniques");
         }
     },
 };

@@ -1,58 +1,85 @@
 <template>
-    <div>
+    <v-container>
         <div v-if="loading" class="text-center py-4">
+            <v-progress-circular
+                indeterminate
+                color="primary"
+                size="64"
+                class="mx-auto"
+            ></v-progress-circular>
             <span>Loading techniques...</span>
         </div>
 
-        <div v-else>
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                <div v-for="technique in techniques" :key="technique.id" class="bg-white p-4 rounded-lg shadow-md">
-                    <img :src="getImageUrl(technique.image)" alt="" class="w-full h-48 object-cover rounded-md" >
-                    <h3 class="text-xl font-semibold mt-2">{{ technique.name }}</h3> 
-                    <p class="text-gray-600 capitalize">{{ technique.difficulty_level }}</p>
-                    <p class="text-gray-500">{{ technique.description }}</p>
-                    <div class="mt-4">
-                        <router-link :to="`/techniques/${technique.id}`" class="text-blue-600 hover:text-blue-800">View Details</router-link>
-                    </div>
-                </div>
-            </div>
+        <v-row v-else>
+            <v-col
+                v-for="technique in techniques"
+                :key="technique.id"
+                cols="12"
+                sm="6"
+                md="4"
+            >
+                <v-card class="pa-4">
+                    <v-img
+                        :src="getImageUrl(technique.image)"
+                        height="200px"
+                        class="rounded-lg"
+                    ></v-img>
+                    <v-card-title>{{ technique.name }}</v-card-title>
+                    <v-card-subtitle class="text-capitalize">{{
+                        technique.difficulty_level
+                    }}</v-card-subtitle>
+                    <v-card-text>{{ technique.description }}</v-card-text>
 
-            <div class="mt-4">
-                <div class="flex justify-between items-center">
-                    <button
+                    <v-card-actions>
+                        <router-link
+                            :to="`/techniques/${technique.id}`"
+                            class="text-primary"
+                        >
+                            <v-btn color="primary">View Details</v-btn>
+                        </router-link>
+                    </v-card-actions>
+                </v-card>
+            </v-col>
+        </v-row>
+
+        <v-row class="mt-4">
+            <v-col cols="12" class="d-flex justify-space-between">
+                <v-btn
                     v-if="links.prev"
                     @click="fetchTechniques(links.prev)"
-                    class="px-4 py-2 bg-gray-200 rounded-md">
-                     Previous   
-                    </button>
-
-                    <button
+                    color="secondary"
+                    outlined
+                >
+                    Previous
+                </v-btn>
+                <v-btn
                     v-if="links.next"
                     @click="fetchTechniques(links.next)"
-                    class="px-4 py-2 bg-gray-200 rounded-md">
-                     Next   
-                    </button>
-                </div>
-            </div>
-        </div>
-    </div>
+                    color="secondary"
+                    outlined
+                >
+                    Next
+                </v-btn>
+            </v-col>
+        </v-row>
+    </v-container>
 </template>
 
 <script>
-import { mapState, mapActions } from 'vuex';
+import { mapState, mapActions } from "vuex";
 
 export default {
     computed: {
-        ...mapState('techniques', ['techniques', 'links', 'loading']),
+        ...mapState("techniques", ["techniques", "links", "loading"]),
     },
     methods: {
-        ...mapActions('techniques', ['fetchTechniques']),
+        ...mapActions("techniques", ["fetchTechniques"]),
         getImageUrl(image) {
             return `/images/${image}`;
-        }
+        },
     },
     mounted() {
         this.fetchTechniques();
-    }
-}
+    },
+};
 </script>
