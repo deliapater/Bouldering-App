@@ -1,35 +1,44 @@
 <template>
-    <div id="app">
-        <header class="bg-gray-800 text-white shadow">
-            <div class="container mx-auto px-4 py-4 flex justify-between items-center">
-                <h1 class="text-lg font-bold">Bouldering App</h1>
-                <nav>
-                    <ul class="flex space-x-4">
-                        <li><router-link to="/" class="hover:underline">Home</router-link></li>
-                        <li><router-link to="/techniques" class="hover:underline">Techniques</router-link></li>
-                        <li><router-link to="/profile" class="hover:underline">Profile</router-link></li>
-                    </ul>
-                </nav>
-            </div>
-        </header>
-        <div class="flex flex-col lg:flex-row">
-            <aside class="bg-gray-100 w-full lg:w-1/4 p-4">
-                <ul class="space-y-2">
-                    <li><router-link to="/techniques" class="block hover:bg-gray-200 rounded">Techniques</router-link></li>
-                    <li><router-link to="/gear" class="block hover:bg-gray-200 rounded">Gear</router-link></li>
-                    <li><router-link to="/settings" class="block hover:bg-gray-200 rounded">Settings</router-link></li>
-                </ul>
-            </aside>
+    <v-app>
+        <v-app-bar color="primary" dark>
+            <v-app-bar-nav-icon></v-app-bar-nav-icon>
+            <v-toolbar-title>Bouldering App</v-toolbar-title>
+            <v-spacer></v-spacer>
+            <v-btn text to="/">Home</v-btn>
+            <v-btn text to="/techniques">Techniques</v-btn>
+            <v-btn text to="/profile">Profile</v-btn>
+        </v-app-bar>
 
-            <main class="flex-1 bg-white p-6">
-                <router-view />
-            </main>
-        </div>
-    </div>
+        <v-container fluid>
+            <v-row>
+                <v-col cols="12" md="3">
+                    <v-navigation-drawer app>
+                        <v-list dense>
+                            <v-list-item to="/techniques">
+                                <v-list-item-title
+                                    >Techniques</v-list-item-title
+                                >
+                            </v-list-item>
+                            <v-list-item to="/gear">
+                                <v-list-item-title>Gear</v-list-item-title>
+                            </v-list-item>
+                            <v-list-item to="/settings">
+                                <v-list-item-title>Settings</v-list-item-title>
+                            </v-list-item>
+                        </v-list>
+                    </v-navigation-drawer>
+                </v-col>
+
+                <v-col cols="12" md="9">
+                    <router-view />
+                </v-col>
+            </v-row>
+        </v-container>
+    </v-app>
 </template>
 
 <script>
 export default {
-    name: 'App'
-}
+    name: "App",
+};
 </script>

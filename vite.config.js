@@ -1,5 +1,6 @@
 import { defineConfig } from 'vite';
 import vue from '@vitejs/plugin-vue';
+import vuetify from 'vite-plugin-vuetify';
 import laravel from 'laravel-vite-plugin';
 import { resolve } from 'path';
 
@@ -10,6 +11,9 @@ export default defineConfig({
       refresh: true,
     }),
     vue(),
+    vuetify({
+      autoImport: true,
+    }),
   ],
   css: {
     postcss: resolve('./postcss.config.cjs'),
