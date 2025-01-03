@@ -7,6 +7,6 @@
     @vite(['resources/css/app.css','resources/js/app.js']) 
 </head>
 <body class="font-sans antialiased">
-    @inertia
+    <div id="app"></div>
 </body>
 </html>

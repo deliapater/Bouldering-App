@@ -1,7 +1,6 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-use Inertia\Inertia;
 
 use App\Http\Controllers\TechniqueController;
 
@@ -16,9 +15,6 @@ use App\Http\Controllers\TechniqueController;
 |
 */
 
-Route::get('/', function () {
-    return Inertia::render('Dashboard');
-});
-
-// Route::get('/techniques', [TechniqueController::class, 'index']);
-// Route::get('/techniques/{id}', [TechniqueController::class, 'show']);
+Route::get('/{any}', function () {
+    return view('app');
+})->where('any', '.*');

@@ -12,7 +12,7 @@
                     <p class="text-gray-600 capitalize">{{ technique.difficulty_level }}</p>
                     <p class="text-gray-500">{{ technique.description }}</p>
                     <div class="mt-4">
-                        <inertia-link :href="`/techniques/${technique.id}`" class="text-blue-600 hover:text-blue-800">View Details</inertia-link>
+                        <router-link :to="`/techniques/${technique.id}`" class="text-blue-600 hover:text-blue-800">View Details</router-link>
                     </div>
                 </div>
             </div>
