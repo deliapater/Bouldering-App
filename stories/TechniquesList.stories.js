@@ -1,54 +1,38 @@
-import { createStore } from 'vuex';
 import TechniquesList from '../resources/js/Components/Techniques/TechniquesList.vue';
-
-const mockStore = createStore({
-    modules: {
-        techniques: {
-            namespaced: true,
-            state: {
-                techniques: [
-                    {
-                        id: 1,
-                        name: 'Dynamic Move',
-                        difficulty_level: 'Intermediate',
-                        description: 'A powerful, controlled jump to reach a hold.',
-                        image: 'dynamic-move.jpg'
-                    },
-                    {
-                        id: 2,
-                        name: 'Hell Hook',
-                        difficulty_level: 'Advanced',
-                        description: 'Using your heel to hook a hold for stability.',
-                        image: 'heel-hook.jpg'
-                    },
-                ],
-                loading: false,
-            },
-            getters: {
-                techniques: (state) => state.techniques,
-                loading: (state) => state.loading,
-            },
-            actions: {
-                fetchTechniques: () => {
-                    console.log('Mock fetchTeachniques action called');
-                }
-            },
-        },
-    }
-})
+import { createMockStore } from '../resources/js/store/mocks/techniques';
 
 export default {
-    title: 'Components/TechniquesList',
-    component: TechniquesList,
+  title: 'Components/TechniquesList',
+  component: TechniquesList,
 };
 
 const Template = (args) => ({
-    components: { TechniquesList },
-    setup() {
-        return { args };
-    },
-    template: '<TechniquesList />',
-    store: mockStore,
+  components: { TechniquesList },
+  setup() {
+    return { args };
+  },
+  template: '<TechniquesList />',
 });
 
 export const Default = Template.bind({});
+
+Default.decorators = [
+  (story) => {
+    const mockStore = createMockStore();
+    mockStore.dispatch('techniques/fetchTechniques');
+
+    return {
+      components: { story },
+      setup() {
+        return { store: mockStore };
+      },
+      template: `
+        <v-app>
+          <v-main>
+            <story />
+          </v-main>
+        </v-app>
+      `,
+    };
+  },
+];
