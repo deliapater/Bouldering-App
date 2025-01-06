@@ -45,7 +45,7 @@
         <v-row class="mt-4">
             <v-col cols="12" class="d-flex justify-space-between">
                 <v-btn
-                    v-if="links.prev"
+                    v-if="links?.prev"
                     @click="fetchTechniques(links.prev)"
                     color="secondary"
                     outlined
@@ -53,7 +53,7 @@
                     Previous
                 </v-btn>
                 <v-btn
-                    v-if="links.next"
+                    v-if="links?.next"
                     @click="fetchTechniques(links.next)"
                     color="secondary"
                     outlined
@@ -69,6 +69,8 @@
 import { mapState, mapActions } from "vuex";
 
 export default {
+    name: 'TechniquesList',
+    
     computed: {
         ...mapState("techniques", ["techniques", "links", "loading"]),
     },

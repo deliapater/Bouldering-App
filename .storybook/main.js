@@ -1,4 +1,5 @@
 /** @type { import('@storybook/vue3-vite').StorybookConfig } */
+import { mergeConfig } from 'vite';
 const config = {
   stories: [
     "../stories/**/*.mdx",
@@ -13,6 +14,15 @@ const config = {
   framework: {
     name: "@storybook/vue3-vite",
     options: {},
+  },
+  viteFinal: async (config) => {
+    return mergeConfig(config, {
+      resolve: {
+        alias: {
+          '@': '/src',
+        },
+      },
+    });
   },
 };
 export default config;

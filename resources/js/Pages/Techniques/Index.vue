@@ -1,5 +1,5 @@
 <template>
-    <v-container fluid class="pa-6">
+    <v-container fluid class="pa-6 mt-10">
         <h1 class="text-2xl font-bold mb-4">Techniques</h1>
 
         <v-row v-if="loading" justify="center">
