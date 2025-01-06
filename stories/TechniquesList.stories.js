@@ -31,7 +31,7 @@ const mockStore = createStore({
             actions: {
                 fetchTechniques: () => {
                     console.log('Mock fetchTeachniques action called');
-                },
+                }
             },
         },
     }

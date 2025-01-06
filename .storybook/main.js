@@ -15,6 +15,7 @@ const config = {
     name: "@storybook/vue3-vite",
     options: {},
   },
+  staticDirs: ['../public'],
   viteFinal: async (config) => {
     return mergeConfig(config, {
       resolve: {

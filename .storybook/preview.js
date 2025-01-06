@@ -22,8 +22,8 @@ const mockStore = createStore({
         async fetchTechniques({ commit }) {
           setTimeout(() => {
             commit('setTechniques', [
-              {id: 1, name: 'Technique 1', description: 'A great technique.'},
-              {id: 2, name: 'Technique 2', description: 'An advanced technique.'}
+              {id: 1, name: 'Technique 1', description: 'A great technique.', image: 'crimp.jpg'},
+              {id: 2, name: 'Technique 2', description: 'An advanced technique.', image: 'mantle.jpg'}
             ]);
             commit('setLoading', false);
           }, 2000);
