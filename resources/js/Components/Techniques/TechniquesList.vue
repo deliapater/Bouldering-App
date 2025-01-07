@@ -11,36 +11,21 @@
         </div>
 
         <v-row v-else>
-            <v-col
-                v-for="technique in techniques"
-                :key="technique.id"
-                cols="12"
-                sm="6"
-                md="4"
-            >
-                <v-card class="pa-4">
-                    <v-img
-                        :src="getImageUrl(technique.image)"
-                        height="200px"
-                        class="rounded-lg"
-                    ></v-img>
-                    <v-card-title>{{ technique.name }}</v-card-title>
-                    <v-card-subtitle class="text-capitalize">{{
-                        technique.difficulty_level
-                    }}</v-card-subtitle>
-                    <v-card-text>{{ technique.description }}</v-card-text>
-
-                    <v-card-actions>
-                        <router-link
-                            :to="`/techniques/${technique.id}`"
-                            class="text-primary"
-                        >
-                            <v-btn color="primary">View Details</v-btn>
-                        </router-link>
-                    </v-card-actions>
-                </v-card>
+            <v-col v-for="technique in techniques" :key="technique.id" cols="12" sm="4">
+                <TechniqueCard 
+                    :technique="technique"
+                    @select="openDetails"
+                />
             </v-col>
         </v-row>
+
+        <v-dialog v-model="detailsVisible" max-width="600px">
+            <TechniqueDetailsModal 
+                v-if="selectedTechnique"
+                :technique="selectedTechnique"
+                @close="closeDetails"
+            />
+        </v-dialog>
 
         <v-row class="mt-4">
             <v-col cols="12" class="d-flex justify-space-between">
@@ -66,18 +51,28 @@
 </template>
 
 <script>
-import { mapState, mapActions } from "vuex";
+import { mapState, mapActions, mapGetters } from "vuex";
+import TechniqueCard from "./TechniqueCard.vue";
+import TechniqueDetailsModal from "./TechniqueDetailsModal.vue";
 
 export default {
     name: 'TechniquesList',
-    
+    components: {
+        TechniqueCard,
+        TechniqueDetailsModal
+    },
     computed: {
-        ...mapState("techniques", ["techniques", "links", "loading"]),
+        ...mapGetters("techniques", ["techniques"]),
+        ...mapState("techniques", ["selectedTechnique", "detailsVisible", "loading", "links"]),
     },
     methods: {
-        ...mapActions("techniques", ["fetchTechniques"]),
-        getImageUrl(image) {
-            return `/images/${image}`;
+        ...mapActions("techniques", ["fetchTechniques", "selectTechnique", "updateDetailsVisible"]),
+        openDetails(technique) {
+            this.selectTechnique(technique);
+            this.updateDetailsVisible(true);
+        },
+        closeDetails() {
+            this.updateDetailsVisible(false);
         },
     },
     mounted() {

@@ -2,6 +2,8 @@ const state = () => ({
     techniques: [],
     links: {},
     loading: false,
+    selectedTechnique: null,
+    detailsVisible: false,
 });
 
 const mutations = {
@@ -13,6 +15,12 @@ const mutations = {
     },
     SET_LOADING(state, loading) {
         state.loading = loading;
+    },
+    SET_SELECTED_TECHNIQUE(state, technique) {
+        state.selectedTechnique = technique;
+    },
+    SET_DETAILS_VISIBLE(state, visible) {
+        state.detailsVisible = visible;
     },
 };
 
@@ -27,15 +35,23 @@ const actions = {
         } catch (error) {
             console.error('Error fetching techniques:', error);
         } finally {
-            commit('SET_LOADING', false)
+            commit('SET_LOADING', false);
         }
+    },
+    selectTechnique({ commit }, technique) {
+        commit('SET_SELECTED_TECHNIQUE', technique);
+    },
+    updateDetailsVisible({ commit }, visible) {
+        commit('SET_DETAILS_VISIBLE', visible);
     },
 };
 
 const getters = {
     techniques: (state) => state.techniques,
+    selectedTechnique: (state) => state.selectedTechnique,
+    detailsVisible: (state) => state.detailsVisible,
     links: (state) => state.links,
-    loading: (state) => state.loading
+    loading: (state) => state.loading,
 };
 
 export default {
@@ -43,5 +59,5 @@ export default {
     state,
     mutations,
     actions,
-    getters
-}
+    getters,
+};
