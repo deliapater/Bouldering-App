@@ -10,8 +10,6 @@ const config = {
     "@storybook/addon-essentials",
     "@chromatic-com/storybook",
     "@storybook/addon-interactions",
-    // "@storybook/addon-knobs", 
-    // "@storybook/addon-actions",
     "@storybook/addon-controls"
   ],
   framework: {
