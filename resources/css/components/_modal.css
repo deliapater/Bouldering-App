@@ -1,0 +1,5 @@
+.gear-item {
+    cursor: pointer;
+    color: var(--v-primary-base);
+    text-decoration: underline;
+}
