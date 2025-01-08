@@ -19,7 +19,7 @@
             </v-col>
         </v-row>
 
-        <v-dialog v-model="detailsVisible" max-width="600px">
+        <v-dialog v-model="detailsVisible" max-width="600px" @click:outside="closeDetails">
             <TechniqueDetailsModal 
                 v-if="selectedTechnique"
                 :technique="selectedTechnique"
@@ -73,7 +73,7 @@ export default {
         },
         closeDetails() {
             this.updateDetailsVisible(false);
-        },
+        }
     },
     mounted() {
         this.fetchTechniques();
