@@ -1,16 +1,10 @@
 <template>
     <v-card>
-        <v-card-title>{{ technique.name }}</v-card-title>
-        <v-card-subtitle>{{ technique.description }}</v-card-subtitle>
-        <v-img
-            :src="getImageUrl(technique.image)"
-            height="200px"
-            class="rounded-lg"
-        ></v-img>
-        <v-card-subtitle class="text-capitalize"
-            >Level: {{ technique.difficulty_level }}</v-card-subtitle
-        >
-        <v-card-text>{{ technique.description }}</v-card-text>
+        <TechniqueCard 
+            :technique="selectedTechnique"
+            class="ma-4"
+            @selected="closeModal"
+        />
         <v-card-subtitle>Steps to practice</v-card-subtitle>
         <v-card-text>{{ technique.steps_to_practice }}</v-card-text>
         <v-card-text>
@@ -29,6 +23,8 @@
 </template>
 
 <script>
+import TechniqueCard from './TechniqueCard.vue';
+
 export default {
     props: {
         technique: {
@@ -36,13 +32,18 @@ export default {
             required: true,
         },
     },
+    components: {
+        TechniqueCard
+    },
+    computed: {
+        selectedTechnique() {
+            return this.$store.getters['techniques/selectedTechnique']
+        }
+    },
     methods: {
         closeModal() {
             this.$emit("close");
-        },
-        getImageUrl(image) {
-            return `/images/${image}`;
-        },
+        }
     },
 };
 </script>
