@@ -5,12 +5,15 @@ const state = () => ({
     selectedTechnique: null,
     detailsVisible: false,
     formModalVisible: false,
-    gearOptions: []
+    gearOptions: [],
 });
 
 const mutations = {
     SET_TECHNIQUES(state, techniques) {
         state.techniques = techniques;
+    },
+    SET_GEAR_OPTIONS(state, gearOptions) {
+        state.gearOptions = gearOptions;
     },
     SET_LINKS(state, links) {
         state.links = links;
@@ -28,52 +31,83 @@ const mutations = {
         state.formModalVisible = isVisible;
     },
     ADD_GEAR_OPTION(state, gear) {
-        state.gearOptions.push({...gear, id: Date.now() });
-    }
+        state.gearOptions.push({ ...gear, id: Date.now() });
+    },
 };
 
 const actions = {
-    async fetchTechniques({ commit }, url = '/api/techniques') {
-        commit('SET_LOADING', true);
+    async fetchTechniques({ commit }, url = "/api/techniques") {
+        commit("SET_LOADING", true);
         try {
             const response = await fetch(url);
             const data = await response.json();
-            commit('SET_TECHNIQUES', data.data);
-            commit('SET_LINKS', data.links);
+            commit("SET_TECHNIQUES", data.data);
+
+            const gearOptions = [];
+            const gearMap = new Map();
+
+            data.data.forEach((technique) => {
+                technique.gear.forEach((gear) => {
+                    if (!gearMap.has(gear.id)) {
+                        gearMap.set(gear.id, gear);
+                        gearOptions.push(gear);
+                    }
+                });
+            });
+            commit("SET_GEAR_OPTIONS", gearOptions);
+            commit("SET_LINKS", data.links);
         } catch (error) {
-            console.error('Error fetching techniques:', error);
+            console.error("Error fetching techniques:", error);
         } finally {
-            commit('SET_LOADING', false);
+            commit("SET_LOADING", false);
         }
     },
     selectTechnique({ commit }, technique) {
-        commit('SET_SELECTED_TECHNIQUE', technique);
+        commit("SET_SELECTED_TECHNIQUE", technique);
     },
     updateDetailsVisible({ commit }, visible) {
-        commit('SET_DETAILS_VISIBLE', visible);
+        commit("SET_DETAILS_VISIBLE", visible);
     },
     openFormModal({ commit }, technique = null) {
-        commit('SET_SELECTED_TECHNIQUE', technique);
-        commit('TOGGLE_FORM_MODAL', true)
+        commit("SET_SELECTED_TECHNIQUE", technique);
+        commit("TOGGLE_FORM_MODAL", true);
     },
     closeFormModal({ commit }) {
-        commit('TOGGLE_FORM_MODAL', false);
-        commit('SET_SELECTED_TECHNIQUE', null);
+        commit("TOGGLE_FORM_MODAL", false);
+        commit("SET_SELECTED_TECHNIQUE", null);
     },
-    saveTechnique({ commit }, technique = null) {
+    saveTechnique({ commit, state }, technique) {
         const isEditing = !!technique.id;
         if (isEditing) {
-            const index = state.techniques.findIndex((t) => t.id === technique.id);
-            if (index > -1) state.techniques.splice(index, 1, technique);
+            fetch(`/api/techniques/${technique.id}`, {
+                method: "PUT",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(technique),
+            }).then(() => {
+                const index = state.techniques.findIndex(
+                    (t) => t.id === technique.id
+                );
+                if (index > -1) state.techniques.splice(index, 1, technique);
+                commit("TOGGLE_FORM_MODAL", false);
+            })
+            .catch((err) => console.error('Failed to update technique:', err));
         } else {
-            technique.id = Date.now();
-            state.techniques.push(technique);
+            fetch(`/api/techniques`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(technique)
+            })
+                .then((response) => response.json())
+                .then((data) => {
+                    state.techniques.push(data);
+                    commit('TOGGLE_FORM_MODAL', false)
+                })
+                .catch((err) => console.error('Failed to create technique:', err));
         }
-        commit('TOGGLE_FORM_MODAL', false);
     },
     addGear({ commit }, gear) {
-        commit('ADD_GEAR_OPTION', gear);
-    }
+        commit("ADD_GEAR_OPTION", gear);
+    },
 };
 
 const getters = {
@@ -83,7 +117,7 @@ const getters = {
     links: (state) => state.links,
     loading: (state) => state.loading,
     gearOptions: (state) => state.gearOptions,
-    formModalVisible: (state) => state.formModalVisible
+    formModalVisible: (state) => state.formModalVisible,
 };
 
 export default {

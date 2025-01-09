@@ -38,37 +38,39 @@
             </v-card-text>
             <v-card-actions>
                 <v-btn @click="closeModal">Cancel</v-btn>
-                <v-btn :disabled="!isFormValid" @click="saveTechnique">Save</v-btn>
+                <v-btn :disabled="!isFormValid" @click="saveTechnique"
+                    >Save</v-btn
+                >
             </v-card-actions>
         </v-card>
-    </v-dialog>    
+    </v-dialog>
 </template>
 <script>
 export default {
     computed: {
         isOpen() {
-            return this.$store.getters['techniques/formModalVisible'];
+            return this.$store.getters["techniques/formModalVisible"];
         },
         technique() {
             return (
-                this.$store.getters['techniques/selectedTechinique'] || {
-                    name: '',
-                    description: '',
-                    steps_to_practice: '',
-                    gear: []
+                this.$store.getters["techniques/selectedTechinique"] || {
+                    name: "",
+                    description: "",
+                    steps_to_practice: "",
+                    gear: [],
                 }
             );
         },
         gearOptions() {
-            return this.$store.getters['techniques/gearOptions'];
+            return this.$store.getters["techniques/gearOptions"];
         },
     },
     data() {
         return {
-            formData: { ...this.technique},
-            newGear: '',
+            formData: { ...this.technique },
+            newGear: "",
             isFormValid: false,
-            requireRule: (value) => !!value || 'This field is required',
+            requireRule: (value) => !!value || "This field is required",
         };
     },
     watch: {
@@ -81,17 +83,33 @@ export default {
     },
     methods: {
         closeModal() {
-            this.$store.dispatch('techniques/closeFormModal');
+            this.$store.dispatch("techniques/closeFormModal");
         },
         saveTechnique() {
-            this.$store.dispatch('techniques/saveTechnique', this.formData);
+            const gearIds = this.formData.gear.map((gear) =>
+                typeof gear === "object" ? gear.id : gear
+            );
+            this.$store.dispatch("techniques/saveTechnique", this.formData);
         },
         addNewGear() {
-            if (this.newGear.trim()) {
-                this.$store.dispatch('techniques/addGear', { name: this.newGear });
-                this.newGear = '';
+            if (
+                this.newGear.trim() &&
+                !this.gearOptions.some(
+                    (gear) =>
+                        gear.name.toLowerCase() === this.newGear.toLowerCase()
+                )
+            ) {
+                this.$store.dispatch("techniques/addGear", {
+                    name: this.newGear,
+                });
+                this.newGear = "";
+            } else {
+                this.$store.dispatch("snackbar/show", {
+                    message: "Gear already exists!",
+                    color: "error",
+                });
             }
         },
-    }
-}
+    },
+};
 </script>
