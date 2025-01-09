@@ -4,6 +4,8 @@ const state = () => ({
     loading: false,
     selectedTechnique: null,
     detailsVisible: false,
+    formModalVisible: false,
+    gearOptions: []
 });
 
 const mutations = {
@@ -22,6 +24,12 @@ const mutations = {
     SET_DETAILS_VISIBLE(state, visible) {
         state.detailsVisible = visible;
     },
+    TOGGLE_FORM_MODAL(state, isVisible) {
+        state.formModalVisible = isVisible;
+    },
+    ADD_GEAR_OPTION(state, gear) {
+        state.gearOptions.push({...gear, id: Date.now() });
+    }
 };
 
 const actions = {
@@ -44,6 +52,28 @@ const actions = {
     updateDetailsVisible({ commit }, visible) {
         commit('SET_DETAILS_VISIBLE', visible);
     },
+    openFormModal({ commit }, technique = null) {
+        commit('SET_SELECTED_TECHNIQUE', technique);
+        commit('TOGGLE_FORM_MODAL', true)
+    },
+    closeFormModal({ commit }) {
+        commit('TOGGLE_FORM_MODAL', false);
+        commit('SET_SELECTED_TECHNIQUE', null);
+    },
+    saveTechnique({ commit }, technique = null) {
+        const isEditing = !!technique.id;
+        if (isEditing) {
+            const index = state.techniques.findIndex((t) => t.id === technique.id);
+            if (index > -1) state.techniques.splice(index, 1, technique);
+        } else {
+            technique.id = Date.now();
+            state.techniques.push(technique);
+        }
+        commit('TOGGLE_FORM_MODAL', false);
+    },
+    addGear({ commit }, gear) {
+        commit('ADD_GEAR_OPTION', gear);
+    }
 };
 
 const getters = {
@@ -52,6 +82,8 @@ const getters = {
     detailsVisible: (state) => state.detailsVisible,
     links: (state) => state.links,
     loading: (state) => state.loading,
+    gearOptions: (state) => state.gearOptions,
+    formModalVisible: (state) => state.formModalVisible
 };
 
 export default {

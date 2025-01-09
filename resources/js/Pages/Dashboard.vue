@@ -11,16 +11,30 @@
                 <TechniquesList />
             </v-col>
         </v-row>
+        <v-btn @click="openFormModalBtn">Add Technique</v-btn>
+        <TechniqueFormModal />
     </v-container>
 </template>
 
 <script>
+import TechniqueFormModal from "../Components/Techniques/TechniqueFormModal.vue";
 import TechniquesList from "../Components/Techniques/TechniquesList.vue";
 
 export default {
     name: "Dashboard",
     components: {
         TechniquesList,
+        TechniqueFormModal
     },
+    computed: {
+        techniques() {
+            return this.$store.getters['techniques/techniques'];
+        },
+    },
+    methods: {
+        openFormModalBtn() {
+            this.$store.dispatch('techniques/openFormModal');
+        }
+    }
 };
 </script>
