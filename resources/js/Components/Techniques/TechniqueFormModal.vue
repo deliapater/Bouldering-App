@@ -25,7 +25,6 @@
                             :value="level.value"
                         ></v-radio>
                     </v-radio-group>
-                    <p>Selected difficulty: {{ formData.difficulty_level }}</p>
                     <v-textarea
                         v-model="formData.description"
                         label="Description"
