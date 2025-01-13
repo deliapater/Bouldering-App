@@ -13,6 +13,19 @@
                         :rules="[requiredRule]"
                     >
                     </v-text-field>
+                    <v-radio-group
+                        v-model="formData.difficulty_level"
+                        :rules="[requiredRule]"
+                        label="Difficulty Level"
+                    >
+                        <v-radio
+                            v-for="level in difficultyItems"
+                            :key="level.value"
+                            :label="level.text"
+                            :value="level.value"
+                        ></v-radio>
+                    </v-radio-group>
+                    <p>Selected difficulty: {{ formData.difficulty_level }}</p>
                     <v-textarea
                         v-model="formData.description"
                         label="Description"
@@ -67,9 +80,21 @@ export default {
     },
     data() {
         return {
-            formData: { ...this.technique },
+            formData: {
+                id: null,
+                name: "",
+                description: "",
+                steps_to_practice: "",
+                gear: [],
+                difficulty_level: "beginner",
+            },
             newGear: "",
             isFormValid: false,
+            difficultyItems: [
+                { value: "beginner", text: "Beginner" },
+                { value: "intermediate", text: "Intermediate" },
+                { value: "advanced", text: "Advanced" },
+            ],
             requireRule: (value) => !!value || "This field is required",
         };
     },
@@ -80,6 +105,9 @@ export default {
             },
             deep: true,
         },
+    },
+    mounted() {
+        console.log("Mounted difficulty levels:", this.difficultyLevels);
     },
     methods: {
         closeModal() {
