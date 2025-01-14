@@ -31,7 +31,10 @@
                         :rules="[requireRule]"
                     >
                     </v-textarea>
-                    <GearSelector v-model="formData.gear"/>
+                    <GearSelector
+                        :value="formData.gear"
+                        @add-gear="handleAddGear"
+                    />
                 </v-form>
             </v-card-text>
             <v-card-actions>
@@ -44,10 +47,10 @@
     </v-dialog>
 </template>
 <script>
-import GearSelector from "@/Components/Gears/GearSelector.vue"
+import GearSelector from "@/Components/Gears/GearSelector.vue";
 export default {
     components: {
-        GearSelector
+        GearSelector,
     },
     data() {
         return {
@@ -88,9 +91,38 @@ export default {
             this.$store.dispatch("techniques/closeFormModal");
         },
         saveTechnique() {
-            const gearId = this.formData.gear;
-            this.$store.dispatch("techniques/saveTechnique", { ...this.formData, gear: gearId});
-        }
+            if (!this.formData.gear || this.formData.gear.length === 0) {
+                this.$store.dispatch("snackbar/show", {
+                    message: "Please select or add at least one gear!",
+                    color: "error",
+                });
+                return;
+            }
+            const formattedGear = Array.isArray(this.formData.gear)
+                ? this.formData.gear.map((gear) => ({
+                    id: gear.id,
+                    name: gear.name,
+                    description: gear.description,
+                    category: gear.category
+                }))
+                : [{
+                    id: this.formData.gear.id,
+                    name: this.formData.gear.name,
+                    description: this.formData.gear.description,
+                    category: this.formData.gear.category
+                }];
+
+            this.$store.dispatch("techniques/saveTechnique", {
+                ...this.formData,
+                gear: formattedGear,
+            });
+        },
+        handleAddGear(selectedGear) {
+            if (!this.formData.gear) {
+                this.formData.gear = [];
+            }
+            this.formData.gear.push(selectedGear);
+        },
     },
 };
 </script>
