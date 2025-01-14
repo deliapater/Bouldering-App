@@ -11,7 +11,7 @@ class GearController extends Controller
 {
     public function index()
     {
-        $gears = Gear::all();
+        $gears = Gear::with('techniques')->get();
         return GearResource::collection($gears);
     }
     public function store(GearRequest $request)
@@ -29,7 +29,7 @@ class GearController extends Controller
 
     public function update(GearRequest $request, Gear $gear)
     {
-        $this->authorize('create', Gear::class);
+        $this->authorize('update', $gear);
         $gear->update($request->validated());
         return new GearResource($gear);
     }
@@ -37,6 +37,12 @@ class GearController extends Controller
     public function destroy(string $id)
     {
         $gear = Gear::findOrFail($id);
+
+        if($gear->techniques()->exists()) {
+            return response()->json([
+                'message' => 'Cannot delete gear associated with techniques'
+            ], 400);
+        }
         $gear->delete();
         return response()->noContent();
     }

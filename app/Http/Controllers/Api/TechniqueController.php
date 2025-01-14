@@ -18,10 +18,20 @@ class TechniqueController extends Controller
  
     public function store(TechniqueRequest $request)
     {
-       $data = $request->validated();
        $this->authorize('create', Technique::class);
-       $technique = Technique::create($data);
-       return new TechniqueResource($technique);
+       $data = $request->validated();
+       $technique = Technique::create([
+        'name' => $data['name'],
+        'description' => $data['description'],
+        'steps_to_practice' => $data['steps_to_practice'] ?? null,
+        'difficulty_level' => $data['difficulty_level'],
+       ]);
+
+       if(!empty($data['gear'])) {
+        $gearIds = collect($data['gear'])->pluck('id');
+        $technique->gear()->sync($gearIds);
+       }
+       return new TechniqueResource($technique->load('gear'));
     }
 
 
