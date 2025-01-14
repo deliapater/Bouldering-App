@@ -31,6 +31,12 @@
 
                 <v-col cols="12" md="9">
                     <router-view />
+                    <v-snackbar
+                    v-model="snackbar.visible"
+                    :color="snackbar.color"
+                    top
+                    timeout="3000"
+                    >{{ snackbar.message }}</v-snackbar>
                 </v-col>
             </v-row>
         </v-container>
@@ -38,7 +44,12 @@
 </template>
 
 <script>
+import { mapGetters } from 'vuex/dist/vuex.cjs.js';
+
 export default {
     name: "App",
+    computed: {
+        ...mapGetters("snackbar", ["snackbar"])
+    }
 };
 </script>

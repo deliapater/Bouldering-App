@@ -31,21 +31,7 @@
                         :rules="[requireRule]"
                     >
                     </v-textarea>
-                    <v-select
-                        v-model="formData.gear"
-                        :items="gearOptions"
-                        item-text="name"
-                        item-value="id"
-                        label="Gear"
-                        multiple
-                        chips
-                    ></v-select>
-                    <v-text-field
-                        v-model="newGear"
-                        label="Add New Gear"
-                        @keyup.enter="addNewGear"
-                    ></v-text-field>
-                    <v-btn @click="addNewGear">Add Gear</v-btn>
+                    <GearSelector v-model="formData.gear"/>
                 </v-form>
             </v-card-text>
             <v-card-actions>
@@ -58,24 +44,10 @@
     </v-dialog>
 </template>
 <script>
+import GearSelector from "@/Components/Gears/GearSelector.vue"
 export default {
-    computed: {
-        isOpen() {
-            return this.$store.getters["techniques/formModalVisible"];
-        },
-        technique() {
-            return (
-                this.$store.getters["techniques/selectedTechinique"] || {
-                    name: "",
-                    description: "",
-                    steps_to_practice: "",
-                    gear: [],
-                }
-            );
-        },
-        gearOptions() {
-            return this.$store.getters["techniques/gearOptions"];
-        },
+    components: {
+        GearSelector
     },
     data() {
         return {
@@ -84,10 +56,9 @@ export default {
                 name: "",
                 description: "",
                 steps_to_practice: "",
-                gear: [],
+                gear: null,
                 difficulty_level: "beginner",
             },
-            newGear: "",
             isFormValid: false,
             difficultyItems: [
                 { value: "beginner", text: "Beginner" },
@@ -97,46 +68,29 @@ export default {
             requireRule: (value) => !!value || "This field is required",
         };
     },
-    watch: {
-        technique: {
-            handler(newTechnique) {
-                this.formData = { ...newTechnique };
-            },
-            deep: true,
+    computed: {
+        isOpen() {
+            return this.$store.getters["techniques/formModalVisible"];
         },
-    },
-    mounted() {
-        console.log("Mounted difficulty levels:", this.difficultyLevels);
+        technique() {
+            return (
+                this.$store.getters["techniques/selectedTechnique"] || {
+                    name: "",
+                    description: "",
+                    steps_to_practice: "",
+                    gear: [],
+                }
+            );
+        },
     },
     methods: {
         closeModal() {
             this.$store.dispatch("techniques/closeFormModal");
         },
         saveTechnique() {
-            const gearIds = this.formData.gear.map((gear) =>
-                typeof gear === "object" ? gear.id : gear
-            );
-            this.$store.dispatch("techniques/saveTechnique", this.formData);
-        },
-        addNewGear() {
-            if (
-                this.newGear.trim() &&
-                !this.gearOptions.some(
-                    (gear) =>
-                        gear.name.toLowerCase() === this.newGear.toLowerCase()
-                )
-            ) {
-                this.$store.dispatch("techniques/addGear", {
-                    name: this.newGear,
-                });
-                this.newGear = "";
-            } else {
-                this.$store.dispatch("snackbar/show", {
-                    message: "Gear already exists!",
-                    color: "error",
-                });
-            }
-        },
+            const gearId = this.formData.gear;
+            this.$store.dispatch("techniques/saveTechnique", { ...this.formData, gear: gearId});
+        }
     },
 };
 </script>
