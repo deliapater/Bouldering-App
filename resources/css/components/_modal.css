@@ -3,3 +3,9 @@
     color: var(--v-primary-base);
     text-decoration: underline;
 }
+.gear-option {
+    margin-bottom: 8px;
+}
+.mt-4 {
+    margin-top: 16px;
+}

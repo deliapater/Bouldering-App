@@ -1,41 +1,70 @@
 <template>
     <div>
         <label for="gear">Select Gear</label>
-        <div v-for="gear in gearOptions" :key="gear.id" class="gear-option">
-            <input
-                type="radio"
-                :id="`gear-${gear.id}`"
+        <v-radio-group v-model="selectedGear" row>
+            <v-radio
+                v-for="gear in gearOptions"
+                :key="gear.id"
+                :label="gear.name"
                 :value="gear"
-                v-model="selectedGear"
-            />
-            <label :for="`gear-${gear.id}`">{{ gear.name }}</label>
-        </div>
+                class="gear-option"
+            ></v-radio>
+        </v-radio-group>
+        <v-card v-if="selectedGear" class="mt-4" outlined>
+            <v-card-title>
+                <strong>Selected Gear</strong>
+            </v-card-title>
+            <v-card-text>
+                <p>
+                    <strong>Description:</strong>{{ selectedGear.description }}
+                </p>
+                <p><strong>Category:</strong>{{ selectedGear.category }}</p>
+            </v-card-text>
+            <v-card-actions>
+                <v-btn color="primary" @click="addSelectedGear">Add Gear</v-btn>
+            </v-card-actions>
+        </v-card>
 
-        <div v-if="selectedGear">
-            <p><strong>Description:</strong>{{ selectedGear.description }}</p>
-            <p><strong>Category:</strong>{{ selectedGear.category }}</p>
-            <v-btn @click="addSelectedGear">Add Gear</v-btn>
-        </div>
+        <v-btn
+            v-if="!selectedGear && !showNewGearForm"
+            color="primary"
+            class="mt-4"
+            @click="showNewGearForm = true"
+        >
+            Add New Gear
+        </v-btn>
 
-        <div v-else-if="showNewGearForm">
-            <h4>Add New Gear</h4>
-            <v-text-field
-                v-model="newGear.name"
-                label="Gear Name"
-                :rules="[requiredRule]"
-            ></v-text-field>
-            <v-textarea
-                v-model="newGear.description"
-                label="Gear Description"
-                :rules="[requiredRule]"
-            ></v-textarea>
-            <v-text-field
-                v-model="newGear.category"
-                label="Gear Category"
-                :rules="[requiredRule]"
-            ></v-text-field>
-            <v-btn @click="addNewGear">Add New Gear</v-btn>
-        </div>
+        <v-card
+            v-else-if="!selectedGear && showNewGearForm"
+            class="mt-4"
+            outlined
+        >
+            <v-card-title>
+                <strong>Add New Gear</strong>
+            </v-card-title>
+            <v-card-text>
+                <v-text-field
+                    v-model="newGear.name"
+                    label="Gear Name"
+                    :rules="[requiredRule]"
+                ></v-text-field>
+                <v-text-field
+                    v-model="newGear.category"
+                    label="Gear Category"
+                    :rules="[requiredRule]"
+                ></v-text-field>
+                <v-textarea
+                    v-model="newGear.description"
+                    label="Gear Description"
+                    :rules="[requiredRule]"
+                ></v-textarea>
+                <v-card-actions>
+                    <v-btn color="primary" @click="addNewGear"
+                        >Add New Gear</v-btn
+                    >
+                </v-card-actions>
+            </v-card-text>
+        </v-card>
     </div>
 </template>
 
@@ -48,7 +77,7 @@ export default {
             required: true,
         },
     },
-    emits: ["update:value"],
+    emits: ["update:value", "add-gear"],
     data() {
         return {
             selectedGear: null,
@@ -57,7 +86,7 @@ export default {
                 description: "",
                 category: "",
             },
-            showNewGearForm: true,
+            showNewGearForm: false,
             requiredRule: (value) => !!value || "This field is required",
         };
     },
@@ -96,8 +125,3 @@ export default {
     },
 };
 </script>
-<style scoped>
-.gear-option {
-    margin-bottom: 8px;
-}
-</style>
