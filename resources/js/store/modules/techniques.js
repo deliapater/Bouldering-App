@@ -76,35 +76,72 @@ const actions = {
         commit("TOGGLE_FORM_MODAL", false);
         commit("SET_SELECTED_TECHNIQUE", null);
     },
-    saveTechnique({ commit, state }, technique) {
-        const isEditing = !!technique.id;
-        if (isEditing) {
-            fetch(`/api/techniques/${technique.id}`, {
-                method: "PUT",
+    saveTechnique: async ({ commit, state, dispatch }, technique) => {
+        if (!technique) {
+            console.error("Technique object is missing!");
+            return;
+        }
+        console.log("Technique payload:", technique);
+        const isEditing = !!technique.id; // Check if it's an edit or create action
+        const endpoint = isEditing
+            ? `/api/techniques/${technique.id}`
+            : `/api/techniques`;
+        const method = isEditing ? "PUT" : "POST";
+        const token = localStorage.getItem("auth_token");
+        console.log("Token:", token);
+        try {
+            // Send the API request
+            const response = await fetch(endpoint, {
+                method,
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify(technique),
-            }).then(() => {
-                const index = state.techniques.findIndex(
-                    (t) => t.id === technique.id
-                );
-                if (index > -1) state.techniques.splice(index, 1, technique);
-                commit("TOGGLE_FORM_MODAL", false);
-            })
-            .catch((err) => console.error('Failed to update technique:', err));
-        } else {
-            fetch(`/api/techniques`, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(technique)
-            })
-                .then((response) => response.json())
-                .then((data) => {
-                    state.techniques.push(data);
-                    commit('TOGGLE_FORM_MODAL', false)
-                })
-                .catch((err) => console.error('Failed to create technique:', err));
+            });
+    
+            // Handle non-2xx HTTP responses
+            if (!response.ok) {
+                const error = await response.json();
+                console.error("Failed to save technique:", error.message || error);
+    
+                // Dispatch error feedback to the snackbar
+                dispatch("snackbar/show", {
+                    message: error.message || "Failed to save technique. Please try again.",
+                    color: "error",
+                }, { root: true });
+    
+                return;
+            }
+    
+            // Parse the successful response
+            const data = await response.json();
+    
+            if (isEditing) {
+                // Update the existing technique in the state
+                const index = state.techniques.findIndex((t) => t.id === technique.id);
+                if (index > -1) state.techniques.splice(index, 1, data);
+            } else {
+                // Add the new technique to the state
+                state.techniques.push(data);
+            }
+    
+            // Close the modal
+            commit("TOGGLE_FORM_MODAL", false);
+    
+            // Dispatch success feedback to the snackbar
+            dispatch("snackbar/show", {
+                message: "Technique saved successfully!",
+                color: "success",
+            }, { root: true });
+        } catch (error) {
+            console.error("An error occurred while saving technique:", error);
+    
+            // Dispatch generic error feedback to the snackbar
+            dispatch("snackbar/show", {
+                message: "An error occurred. Please try again later.",
+                color: "error",
+            }, { root: true });
         }
     },
+    
     addGear({ commit }, gear) {
         commit("ADD_GEAR_OPTION", gear);
     },

@@ -16,6 +16,9 @@
             </v-card-title>
             <v-card-text>
                 <p>
+                    <strong>Name:</strong>{{ selectedGear.name }}
+                </p>
+                <p>
                     <strong>Description:</strong>{{ selectedGear.description }}
                 </p>
                 <p><strong>Category:</strong>{{ selectedGear.category }}</p>

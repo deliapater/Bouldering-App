@@ -28,9 +28,22 @@
                     <v-textarea
                         v-model="formData.description"
                         label="Description"
-                        :rules="[requireRule]"
+                        :rules="[requiredRule]"
                     >
                     </v-textarea>
+                    <v-textarea
+                        v-model="formData.steps_to_practice"
+                        label="Steps to Practice"
+                        :rules="[requiredRule]"
+                    ></v-textarea>
+                    <v-file-input
+                        v-model="imageFile"
+                        label="Upload Image"
+                        accept="image/*"
+                        outlined
+                        prepend-icon="mdi-camera"
+                        @change="compressAndSetImage"
+                    ></v-file-input>
                     <GearSelector
                         :value="formData.gear"
                         @add-gear="handleAddGear"
@@ -48,6 +61,8 @@
 </template>
 <script>
 import GearSelector from "@/Components/Gears/GearSelector.vue";
+import imageCompression from "browser-image-compression";
+
 export default {
     components: {
         GearSelector,
@@ -61,14 +76,16 @@ export default {
                 steps_to_practice: "",
                 gear: null,
                 difficulty_level: "beginner",
+                image: null,
             },
+            imageFile: null,
             isFormValid: false,
             difficultyItems: [
                 { value: "beginner", text: "Beginner" },
                 { value: "intermediate", text: "Intermediate" },
                 { value: "advanced", text: "Advanced" },
             ],
-            requireRule: (value) => !!value || "This field is required",
+            requiredRule: (value) => !!value || "This field is required",
         };
     },
     computed: {
@@ -82,15 +99,45 @@ export default {
                     description: "",
                     steps_to_practice: "",
                     gear: [],
+                    difficulty_level: "beginner",
+                    image: null,
                 }
             );
         },
     },
     methods: {
+        openModalForEdit(technique) {
+            this.formData = { ...technique };
+            this.$store.commit("techniques/SET_SELECTED_TECHNIQUE", technique);
+        },
         closeModal() {
             this.$store.dispatch("techniques/closeFormModal");
         },
-        saveTechnique() {
+        async compressAndSetImage() {
+            if (!this.imageFile) return;
+
+            try {
+                const options = {
+                    maxWidthOrHeight: 800,
+                    useWebWorker: true,
+                };
+
+                const compressedImage = await imageCompression(
+                    this.imageFile,
+                    options
+                );
+
+                const reader = new FileReader();
+                reader.readAsDataURL(compressedImage);
+                reader.onloadend = () => {
+                    this.formData.image = reader.result;
+                };
+            } catch (error) {
+                console.error("Error compressing image:", error);
+            }
+        },
+        async saveTechnique() {
+            console.log("Form Data being saved:", this.formData)
             if (!this.formData.gear || this.formData.gear.length === 0) {
                 this.$store.dispatch("snackbar/show", {
                     message: "Please select or add at least one gear!",
@@ -98,25 +145,29 @@ export default {
                 });
                 return;
             }
+
             const formattedGear = Array.isArray(this.formData.gear)
                 ? this.formData.gear.map((gear) => ({
-                    id: gear.id,
-                    name: gear.name,
-                    description: gear.description,
-                    category: gear.category
-                }))
-                : [{
-                    id: this.formData.gear.id,
-                    name: this.formData.gear.name,
-                    description: this.formData.gear.description,
-                    category: this.formData.gear.category
-                }];
+                      id: gear.id,
+                      name: gear.name,
+                      description: gear.description,
+                      category: gear.category,
+                  }))
+                : [
+                      {
+                          id: this.formData.gear.id,
+                          name: this.formData.gear.name,
+                          description: this.formData.gear.description,
+                          category: this.formData.gear.category,
+                      },
+                  ];
 
             this.$store.dispatch("techniques/saveTechnique", {
                 ...this.formData,
                 gear: formattedGear,
             });
         },
+
         handleAddGear(selectedGear) {
             if (!this.formData.gear) {
                 this.formData.gear = [];
