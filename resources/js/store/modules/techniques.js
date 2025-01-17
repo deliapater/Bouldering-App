@@ -1,3 +1,5 @@
+import apiClient from "../apiClient";
+
 const state = () => ({
     techniques: [],
     links: {},
@@ -45,11 +47,11 @@ const actions = {
                 method: "GET",
                 headers: {
                     "Content-Type": "application/json",
-                    "Authorization": `Bearer ${token}`,
+                    Authorization: `Bearer ${token}`,
                 },
             });
 
-            if(!response.ok) {
+            if (!response.ok) {
                 throw new Error("Error fetching techniques");
             }
 
@@ -95,56 +97,56 @@ const actions = {
             return;
         }
         console.log("Technique payload:", technique);
-        const isEditing = !!technique.id; 
+        const isEditing = !!technique.id;
         const endpoint = isEditing
-            ? `/api/techniques/${technique.id}`
-            : `/api/techniques`;
+            ? `/techniques/${technique.id}`
+            : `/techniques`;
         const method = isEditing ? "PUT" : "POST";
         try {
-            const response = await fetch(endpoint, {
+            const response = await apiClient({
                 method,
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify(technique),
+                url: endpoint,
+                data: technique,
             });
-    
-            if (!response.ok) {
-                const error = await response.json();
-                console.error("Failed to save technique:", error.message || error);
-    
-                dispatch("snackbar/show", {
-                    message: error.message || "Failed to save technique. Please try again.",
-                    color: "error",
-                }, { root: true });
-    
-                return;
-            }
 
-            const data = await response.json();
-    
+            const data = response.data;
+
             if (isEditing) {
                 // Update the existing technique in the state
-                const index = state.techniques.findIndex((t) => t.id === technique.id);
+                const index = state.techniques.findIndex(
+                    (t) => t.id === technique.id
+                );
                 if (index > -1) state.techniques.splice(index, 1, data);
             } else {
                 state.techniques.push(data);
             }
-    
+
             commit("TOGGLE_FORM_MODAL", false);
-    
-            dispatch("snackbar/show", {
-                message: "Technique saved successfully!",
-                color: "success",
-            }, { root: true });
+
+            dispatch(
+                "snackbar/show",
+                {
+                    message: "Technique saved successfully!",
+                    color: "success",
+                },
+                { root: true }
+            );
         } catch (error) {
             console.error("An error occurred while saving technique:", error);
-    
-            dispatch("snackbar/show", {
-                message: "An error occurred. Please try again later.",
-                color: "error",
-            }, { root: true });
+
+            const errorMessage = error.response?.data?.message || "An error occurred. Please try again later.";
+
+            dispatch(
+                "snackbar/show",
+                {
+                    message: errorMessage,
+                    color: "error",
+                },
+                { root: true }
+            );
         }
     },
-    
+
     addGear({ commit }, gear) {
         commit("ADD_GEAR_OPTION", gear);
     },

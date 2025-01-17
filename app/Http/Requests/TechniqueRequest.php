@@ -33,7 +33,7 @@ class TechniqueRequest extends FormRequest
             'difficulty_level' => 'required|string|in:beginner,intermediate,advanced',
             'description' => 'nullable|string',
             'steps_to_practice' => 'nullable|string',
-            'image' => 'nullable|string|max:2048',
+            'image' => 'nullable|string',
             'gear' => 'nullable|array',
             'gear.*' => 'exists:gears,id'
         ];
@@ -62,7 +62,6 @@ class TechniqueRequest extends FormRequest
             'name.required' => 'The technique name is required.',
             'difficulty_level.required' => 'Please select a difficulty level.',
             'image.string' => 'The uploaded file must be an image.',
-            'image.max' => 'The image size must not exceed 2MB.',
             'gear.*.exists' => 'The selected gear must exist in the database.'
         ];
     }
