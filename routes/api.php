@@ -5,6 +5,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\TechniqueController;
 use App\Http\Controllers\Api\GearController;
 use App\Http\Controllers\Api\LocationController;
+use App\Http\Controllers\Api\AuthController;
 
 /*
 |--------------------------------------------------------------------------
@@ -17,11 +18,15 @@ use App\Http\Controllers\Api\LocationController;
 |
 */
 
+Route::post('/login', [AuthController::class, 'login']);
+
+
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
 
-
-Route::apiResource('techniques', TechniqueController::class);
-Route::apiResource('gears', GearController::class);
-Route::apiResource('locations', LocationController::class);
+Route::middleware('auth:sanctum')->group(function () {
+    Route::apiResource('techniques', TechniqueController::class);
+    Route::apiResource('gears', GearController::class);
+    Route::apiResource('locations', LocationController::class);
+});

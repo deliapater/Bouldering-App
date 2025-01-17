@@ -37,9 +37,22 @@ const mutations = {
 
 const actions = {
     async fetchTechniques({ commit }, url = "/api/techniques") {
+        const token = localStorage.getItem("auth_token");
+        console.log("Token:", token);
         commit("SET_LOADING", true);
         try {
-            const response = await fetch(url);
+            const response = await fetch(url, {
+                method: "GET",
+                headers: {
+                    "Content-Type": "application/json",
+                    "Authorization": `Bearer ${token}`,
+                },
+            });
+
+            if(!response.ok) {
+                throw new Error("Error fetching techniques");
+            }
+
             const data = await response.json();
             commit("SET_TECHNIQUES", data.data);
 
@@ -82,27 +95,22 @@ const actions = {
             return;
         }
         console.log("Technique payload:", technique);
-        const isEditing = !!technique.id; // Check if it's an edit or create action
+        const isEditing = !!technique.id; 
         const endpoint = isEditing
             ? `/api/techniques/${technique.id}`
             : `/api/techniques`;
         const method = isEditing ? "PUT" : "POST";
-        const token = localStorage.getItem("auth_token");
-        console.log("Token:", token);
         try {
-            // Send the API request
             const response = await fetch(endpoint, {
                 method,
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify(technique),
             });
     
-            // Handle non-2xx HTTP responses
             if (!response.ok) {
                 const error = await response.json();
                 console.error("Failed to save technique:", error.message || error);
     
-                // Dispatch error feedback to the snackbar
                 dispatch("snackbar/show", {
                     message: error.message || "Failed to save technique. Please try again.",
                     color: "error",
@@ -110,8 +118,7 @@ const actions = {
     
                 return;
             }
-    
-            // Parse the successful response
+
             const data = await response.json();
     
             if (isEditing) {
@@ -119,14 +126,11 @@ const actions = {
                 const index = state.techniques.findIndex((t) => t.id === technique.id);
                 if (index > -1) state.techniques.splice(index, 1, data);
             } else {
-                // Add the new technique to the state
                 state.techniques.push(data);
             }
     
-            // Close the modal
             commit("TOGGLE_FORM_MODAL", false);
     
-            // Dispatch success feedback to the snackbar
             dispatch("snackbar/show", {
                 message: "Technique saved successfully!",
                 color: "success",
@@ -134,7 +138,6 @@ const actions = {
         } catch (error) {
             console.error("An error occurred while saving technique:", error);
     
-            // Dispatch generic error feedback to the snackbar
             dispatch("snackbar/show", {
                 message: "An error occurred. Please try again later.",
                 color: "error",
