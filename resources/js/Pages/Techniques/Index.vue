@@ -11,16 +11,20 @@
         </v-row>
 
         <TechniquesList :techniques="techniques" />
+        <v-btn color="primary" class="mt-4" @click="openFormModalBtn">Add Technique</v-btn>
+        <TechniqueFormModal />
     </v-container>
 </template>
 
 <script>
 import { mapGetters } from "vuex/dist/vuex.cjs.js";
 import TechniquesList from "../../Components/Techniques/TechniquesList.vue";
+import TechniqueFormModal from "../../Components/Techniques/TechniqueFormModal.vue"
 
 export default {
     components: {
         TechniquesList,
+        TechniqueFormModal
     },
     computed: {
         ...mapGetters("techniques", ["techniques", "loading"]),
@@ -30,5 +34,10 @@ export default {
             this.$store.dispatch("techniques/fetchTechniques");
         }
     },
+    methods: {
+        openFormModalBtn() {
+            this.$store.dispatch('techniques/openFormModal');
+        }
+    }
 };
 </script>
