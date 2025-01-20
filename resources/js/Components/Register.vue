@@ -57,6 +57,13 @@
                             class="mt-4"
                             >{{ errorMessage }}</v-alert
                         >
+                        <v-snackbar
+                            v-model="snackbar.visible"
+                            :color="snackbar.color"
+                            timeout="3000"
+                            top
+                            >{{ snackbar.message }}</v-snackbar
+                        >
                     </v-card-text>
                 </v-card>
             </v-col>
@@ -87,27 +94,41 @@ export default {
                 passwordConfirmation: (value) =>
                     value === this.password || "Passwords do not match.",
             },
+            snackbar: {
+                visible: false,
+                message: "",
+                color: "success",
+            },
         };
     },
     methods: {
         ...mapActions("auth", ["register"]),
         togglePasswordVisibility() {
-            this.passwordVisible = !this.passwordVisible
+            this.passwordVisible = !this.passwordVisible;
         },
+
         async handleRegister() {
             try {
-                await this.register({
+                const userData = {
                     name: this.name,
                     email: this.email,
                     password: this.password,
                     password_confirmation: this.password_confirmation,
-                });
-                this.$router.push("/login");
+                };
+                const response = await this.register(userData);
+                this.snackbar.message =
+                    response.message || "Registration successful!";
+                this.snackbar.color = "success";
+                this.snackbar.visible = true;
+                setTimeout(() => {
+                    this.$router.push("/login");
+                }, 2000);
             } catch (error) {
                 console.error("Registration failed:", error);
-                this.errorMessage =
-                    error.response?.data?.message ||
-                    "An error occurred during registration.";
+                this.snackbar.message =
+                   error.response?.data?.message || "Registration failed. Please try again.";
+                this.snackbar.color = "error";
+                this.snackbar.visible = true;
             }
         },
     },
