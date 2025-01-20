@@ -29,9 +29,13 @@ export default {
         },
         logout({ commit }) {
             localStorage.removeItem("auth_token");
+
             commit("SET_USER", null);
             commit("SET_TOKEN", null);
-            router.push("/login");
+
+            this.$router.push("/login");
+
+            location.reload();
         },
     },
     getters: {

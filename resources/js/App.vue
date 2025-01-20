@@ -7,6 +7,9 @@
             <v-btn text to="/">Home</v-btn>
             <v-btn text to="/techniques">Techniques</v-btn>
             <v-btn text to="/profile">Profile</v-btn>
+
+            <v-btn v-if="isAuthenticated" text @click="logout" color="red">Logout</v-btn>
+            <v-btn v-else text to="/login">Login</v-btn>
         </v-app-bar>
 
         <v-container fluid>
@@ -44,12 +47,16 @@
 </template>
 
 <script>
-import { mapGetters } from 'vuex/dist/vuex.cjs.js';
+import { mapActions, mapGetters } from 'vuex/dist/vuex.cjs.js';
 
 export default {
     name: "App",
     computed: {
+        ...mapGetters("auth", ["isAuthenticated"]),
         ...mapGetters("snackbar", ["snackbar"])
+    },
+    methods: {
+        ...mapActions("auth", ["logout"])
     }
 };
 </script>
