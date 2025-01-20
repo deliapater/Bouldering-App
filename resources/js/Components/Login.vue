@@ -64,14 +64,6 @@ export default {
 };
 </script>
 <style scoped>
-.login-container {
-    max-width: 400px;
-    margin: 0 auto;
-    padding: 1rem;
-    border: 1px solid #ddd;
-    border-radius: 5px
-}
-
 .error {
     color: red;
     margin-top: 1rem;

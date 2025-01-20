@@ -15,6 +15,16 @@ export default {
         },
     },
     actions: {
+        async register(_, userDetails) {
+            try {
+                const response = await apiClient.post("/register", userDetails);
+                console.log("Registration successful:", response.data);
+                return response.data;
+            } catch (error) {
+                console.error("Registration error:", error);
+                throw error.response?.data || error.message || "Registration failed";
+            }
+        },
         async login({ commit }, credentials) {
             try {
                 const response = await apiClient.post("/login", credentials);
