@@ -45,7 +45,8 @@
                                 @click:append="togglePasswordVisibility"
                             />
                             <v-btn
-                                :disabled="!valid"
+                                :disabled="!valid || loading"
+                                :loading="loading"
                                 color="primary"
                                 @click="handleRegister"
                                 >Register</v-btn
@@ -82,6 +83,7 @@ export default {
             password: "",
             password_confirmation: "",
             valid: false,
+            loading: false,
             errorMessage: null,
             passwordVisible: false,
             rules: {
@@ -108,6 +110,7 @@ export default {
         },
 
         async handleRegister() {
+            this.loading = true;
             try {
                 const userData = {
                     name: this.name,
@@ -120,15 +123,17 @@ export default {
                     response.message || "Registration successful!";
                 this.snackbar.color = "success";
                 this.snackbar.visible = true;
-                setTimeout(() => {
-                    this.$router.push("/login");
-                }, 2000);
+
+                this.$router.push("/login");
             } catch (error) {
                 console.error("Registration failed:", error);
                 this.snackbar.message =
-                   error.response?.data?.message || "Registration failed. Please try again.";
+                    error.response?.data?.message ||
+                    "Registration failed. Please try again.";
                 this.snackbar.color = "error";
                 this.snackbar.visible = true;
+            } finally {
+                this.loading = false;
             }
         },
     },
