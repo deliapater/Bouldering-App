@@ -1,17 +1,6 @@
 <template>
     <v-app>
-        <v-app-bar color="primary" dark>
-            <v-app-bar-nav-icon></v-app-bar-nav-icon>
-            <v-toolbar-title>Bouldering App</v-toolbar-title>
-            <v-spacer></v-spacer>
-            <v-btn text to="/">Home</v-btn>
-            <v-btn text to="/techniques">Techniques</v-btn>
-            <v-btn text to="/profile">Profile</v-btn>
-
-            <v-btn v-if="isAuthenticated" text @click="logout" color="red">Logout</v-btn>
-            <v-btn v-else text to="/login">Login</v-btn>
-        </v-app-bar>
-
+        <Navbar />
         <v-container fluid>
             <v-row>
                 <v-col cols="12" md="3">
@@ -47,16 +36,16 @@
 </template>
 
 <script>
+import Navbar from './Components/Navbar.vue';
 import { mapActions, mapGetters } from 'vuex/dist/vuex.cjs.js';
 
 export default {
     name: "App",
+    components: {
+        Navbar,
+    },
     computed: {
-        ...mapGetters("auth", ["isAuthenticated"]),
         ...mapGetters("snackbar", ["snackbar"])
     },
-    methods: {
-        ...mapActions("auth", ["logout"])
-    }
 };
 </script>
