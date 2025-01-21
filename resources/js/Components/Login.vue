@@ -6,14 +6,14 @@
                     <v-card-title class="text-h5">Login</v-card-title>
 
                     <v-card-text>
-                        <v-form @submit.prevent="handleLogin">
+                        <v-form ref="form" v-model="valid">
                            <v-text-field
                             v-model="email"
                             label="Email"
                             type="email"
                             required
                             outlined
-                            :rules="[emailRules]"
+                            :rules="[rules.required, rules.email]"
                         />
                         <v-text-field 
                             v-model="password"
@@ -21,9 +21,9 @@
                             type="password"
                             required
                             outlined
-                            :rules="[passwordRules]"
+                            :rules="[rules.required]"
                         />
-                        <v-btn type="submit" color="primary" block>Login</v-btn>
+                        <v-btn :disabled="!valid" color="primary" block @click="handleLogin">Login</v-btn>
                     </v-form>
                     <p v-if="errorMessage" class="error">{{ errorMessage }}</p>
                     </v-card-text>
@@ -41,9 +41,13 @@ export default {
         return {
             email: "",
             password: "",
+            valid: false,
             errorMessage: null,
-            emailRules: [(v) => !!v || "Email is required", (v) => /.+@.+\..+/.test(v) || "Must be a valid email"],
-            passwordRules: [(v) => !!v || "Password is required"]
+            rules: {
+                required: (value) => !!value || "This field is required.",
+                email: (value) =>
+                    /.+@.+\..+/.test(value) || "Email must be valid.",
+            },
         };
     },
     methods: {
@@ -57,7 +61,7 @@ export default {
                 this.$router.push("/dashboard");
             } catch (error) {
                 console.error("Login failed:", error);
-                this.errorMessage = "Invalid credentials. Please try again."
+                this.errorMessage = error.response?.data?.message || "Invalid credentials. Please try again."
             }
         },
     },
