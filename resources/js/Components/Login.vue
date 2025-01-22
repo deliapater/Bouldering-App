@@ -26,6 +26,18 @@
                         <v-btn :disabled="!valid" color="primary" block @click="handleLogin">Login</v-btn>
                     </v-form>
                     <p v-if="errorMessage" class="error">{{ errorMessage }}</p>
+
+                    <v-divider class="my-4"></v-divider>
+                    <p class="text-center">
+                        Don't have an account?
+                        <v-btn
+                            text
+                            color="primary"
+                            to="/register"
+                        >
+                            Register here
+                        </v-btn>
+                    </p>
                     </v-card-text>
                 </v-card>
             </v-col>

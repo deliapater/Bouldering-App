@@ -1,4 +1,5 @@
 import apiClient from "../apiClient";
+import router from "../../router";
 
 export default {
     namespaced: true,
@@ -43,7 +44,7 @@ export default {
             commit("SET_USER", null);
             commit("SET_TOKEN", null);
 
-            this.$router.push("/login");
+            router.push("/login");
 
             location.reload();
         },

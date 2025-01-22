@@ -7,7 +7,7 @@
             <v-btn to="/techniques">Techniques</v-btn>
             <v-btn to="/profile">Profile</v-btn>
 
-            <v-btn v-if="isAuthenticated" text @click="logout" color="red">Logout</v-btn>
+            <v-btn v-if="isAuthenticated" text @click="handleLogout" color="red">Logout</v-btn>
             <v-btn v-else text to="/login">Login</v-btn>
     </v-app-bar>
 </template>
@@ -22,6 +22,9 @@ export default {
     },
     methods: {
         ...mapActions("auth", ["logout"]),
+        handleLogout() {
+            this.logout();
+        }
     },
 };
 </script>

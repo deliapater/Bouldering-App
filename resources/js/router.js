@@ -23,7 +23,8 @@ const routes = [
     {
         path: "/register",
         name: "Register",
-        component: Register
+        component: Register,
+        meta: {requiresAuth: false}
     }
 ];
 
@@ -33,13 +34,16 @@ const router = createRouter({
 });
 
 router.beforeEach((to, from, next) => {
-    const isAuthenticated = !!localStorage.getItem("auth_token");
+    const token = localStorage.getItem("auth_token");
+    const isAuthenticated = !!token;
 
     if (to.matched.some((record) => record.meta.requiresAuth) && !isAuthenticated) {
-        next("/login");
-    } else {
-        next();
+        return next("/login");
+    } 
+    if (to.path === "/login" && isAuthenticated) {
+        return next("/dashboard");
     }
+    next();
 });
 
 export default router;
