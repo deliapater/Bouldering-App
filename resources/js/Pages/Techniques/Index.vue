@@ -11,7 +11,7 @@
         </v-row>
 
         <TechniquesList :techniques="techniques" />
-        <v-btn color="primary" class="mt-4" @click="openFormModalBtn">Add Technique</v-btn>
+        <v-btn color="primary" v-if="isAuthenticated" class="mt-4" @click="openFormModalBtn">Add Technique</v-btn>
         <TechniqueFormModal />
     </v-container>
 </template>
@@ -28,6 +28,7 @@ export default {
     },
     computed: {
         ...mapGetters("techniques", ["techniques", "loading"]),
+        ...mapGetters("auth", ["isAuthenticated"])
     },
     mounted() {
         if (!this.techniques.length) {
