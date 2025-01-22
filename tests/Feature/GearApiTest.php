@@ -17,9 +17,11 @@ class GearApiTest extends TestCase
         $this->user = User::factory()->create([
             'name' => 'Test User',
             'email' => 'test@example.com',
-            'password' => '123',
+            'password' => bcrypt('123'),
             'role' => 'admin',
         ]);
+
+        $this->actingAs($this->user);
         Gear::factory()->count(3)->create();
     }
 

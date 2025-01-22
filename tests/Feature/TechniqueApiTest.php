@@ -14,14 +14,17 @@ class TechniqueApiTest extends TestCase
     protected function setUp(): void
     {
         parent::setUp();
-        Technique::factory()->count(3)->create();
 
         $this->user = User::factory()->create([
             'name' => 'Test User',
             'email' => 'test@example.com',
-            'password' => '123',
+            'password' => bcrypt('123'),
             'role' => 'admin',
         ]);
+
+        $this->actingAs($this->user);
+
+        Technique::factory()->count(3)->create();
     }
      /**
      * Test fetching all techniques.

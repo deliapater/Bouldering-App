@@ -19,9 +19,9 @@ class TechniqueFactory extends Factory
             'name' => $this->faker->word,
             'description' => $this->faker->paragraph,
             'difficulty_level' => $this->faker->randomElement([
-                DifficultyLevel::BEGINNER->value,
-                DifficultyLevel::INTERMEDIATE->value,
-                DifficultyLevel::ADVANCED->value,
+             'beginner',
+             'intermediate',
+             'advanced',
             ]),
             'image' => $this->faker->imageUrl(640, 480, 'techniqye', true, 'Bouldering Technique'),
             'steps_to_practice' => $this->faker->paragraph,
