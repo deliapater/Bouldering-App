@@ -147,20 +147,8 @@ export default {
             }
 
             const formattedGear = Array.isArray(this.formData.gear)
-                ? this.formData.gear.map((gear) => ({
-                      id: gear.id,
-                      name: gear.name,
-                      description: gear.description,
-                      category: gear.category,
-                  }))
-                : [
-                      {
-                          id: this.formData.gear.id,
-                          name: this.formData.gear.name,
-                          description: this.formData.gear.description,
-                          category: this.formData.gear.category,
-                      },
-                  ];
+                ? this.formData.gear.map((gear) => gear.id)
+                : [this.formData.gear.id];
 
             this.$store.dispatch("techniques/saveTechnique", {
                 ...this.formData,
